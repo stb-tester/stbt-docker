@@ -5,6 +5,8 @@ Copyright (c) 2015-2016 stb-tester.com Ltd.
 
 stbt-docker is released under the [MIT License].
 
+[![Build Status][travis-status-image]](travis-status-link)
+
 stbt-docker runs the specified command in a docker container that is set up
 like an [stb-tester ONE] but without video-capture or infrared hardware.
 
@@ -67,6 +69,8 @@ release, because stbt-docker depends on the docker images used on the
 
 
 [MIT License]: https://github.com/stb-tester/stbt-docker/blob/master/LICENSE
+[travis-status-image]: https://travis-ci.org/stb-tester/stbt-docker.svg?branch=master
+[travis-status-link]: https://travis-ci.org/stb-tester/stbt-docker
 [stb-tester ONE]: https://stb-tester.com/stb-tester-one
 [config/setup/setup]: https://stb-tester.com/manual/advanced-configuration#customising-the-test-run-environment
 [test-pack]: https://github.com/stb-tester/stb-tester-test-pack
