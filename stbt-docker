@@ -2,18 +2,35 @@
 
 #
 # This file is part of stb-tester but it is intended to be distributed
-# independently, checked into test-packs. See
-# https://github.com/stb-tester/stb-tester/ for the canonical source.
+# independently, checked into test-packs. The canonical source is
+# <https://github.com/stb-tester/stbt-docker>.
 #
 # This program is built with portability in mind so it should run on Mac OS and
 # Windows. The only dependencies are Python and docker. It is also
 # self-contained and relocatable so it can be deployed as a single file with no
 # dependency on anything else in stbt.
 #
-# Copyright 2015-16 stb-tester.com Ltd.
+# Copyright (c) 2015-2016 stb-tester.com Ltd.
 #
-# License: LGPL v2.1 or (at your option) any later version (see
-# https://github.com/stb-tester/stb-tester/blob/master/LICENSE for details).
+# stbt-docker is released under the MIT License:
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 #
 
 # pylint:disable=line-too-long
@@ -369,14 +386,15 @@ def main(argv):
          sudo -u stb-tester -E -- \\
              env STBT_CONFIG_FILE={config_filename} \\
              "$0" "$@" """).format(
-            uid=inner_uid, gid=inner_gid, cwd=pipes.quote(innerdir),
-            config_filename=pipes.quote(config_filename))]
+         uid=inner_uid, gid=inner_gid, cwd=pipes.quote(innerdir),
+         config_filename=pipes.quote(config_filename))]
         + cmd)
 
     if os.name == "posix":
         os.execvp(cmdline[0], cmdline)
     else:
         return subprocess.call(cmdline)
+
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv))
