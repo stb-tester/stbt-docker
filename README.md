@@ -55,8 +55,10 @@ stbt-docker is part of stb-tester but it is intended to be distributed
 independently, checked into test-packs. The canonical source is
 <https://github.com/stb-tester/stbt-docker>.
 
-To install, copy stbt-docker to the root of your test-pack. To upgrade,
-just download a new version of stbt-docker from this git repository.
+To install, copy
+[stbt-docker](https://github.com/stb-tester/stbt-docker/raw/master/stbt-docker)
+to the root of your test-pack. To upgrade, just download a new version of
+stbt-docker from this git repository.
 
 stbt-docker is built with portability in mind so it should run on Mac OS and
 Windows. The only dependencies are Python and Docker. stbt-docker is
