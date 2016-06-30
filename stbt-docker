@@ -385,6 +385,7 @@ def main(argv):
          cd {cwd} &&
          sudo -u stb-tester -E -- \\
              env STBT_CONFIG_FILE={config_filename} \\
+                 PYTHONPATH=$PYTHONPATH:/usr/lib/stbt \\
              "$0" "$@" """).format(
          uid=inner_uid, gid=inner_gid, cwd=pipes.quote(innerdir),
          config_filename=pipes.quote(config_filename))]

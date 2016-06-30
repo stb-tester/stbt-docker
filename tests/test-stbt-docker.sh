@@ -87,3 +87,34 @@ test_that_with_different_uid_we_still_have_permissions_to_files() {
 		EOF
     [ "$?" == 0 ] || fail "UID switching broken"
 }
+
+test_that_stbt_docker_can_import_stbt() {
+    load_test_pack empty-test-pack
+    "$srcdir"/stbt-docker python <<-'EOF'
+	import stbt
+	print stbt.__doc__.split("\n")[0]
+	assert stbt.__doc__.split("\n")[0] == \
+	    "Main stb-tester python module. Intended to be used with `stbt run`."
+	EOF
+}
+
+test_that_user_provided_pythonpath_doesnt_prevent_us_from_importing_stbt() {
+    load_test_pack with-fake-stbt
+    DOCKER_OPTS="-e PYTHONPATH=/var/lib/stbt/test-pack" \
+    "$srcdir"/stbt-docker python <<-'EOF'
+	import stbt
+	print stbt.__doc__.split("\n")[0]
+	assert stbt.__doc__.split("\n")[0] == \
+	    "Main stb-tester python module. Intended to be used with `stbt run`."
+	EOF
+}
+
+test_that_stbt_docker_respects_pythonpath() {
+    load_test_pack with-fake-stbt
+    DOCKER_OPTS="-e PYTHONPATH=/var/lib/stbt/test-pack/lib" \
+    "$srcdir"/stbt-docker python <<-'EOF'
+	import stbt
+	assert stbt.__doc__.split("\n")[0] == \
+	    "Fake stbt to test stbt-docker's PYTHONPATH handling."
+	EOF
+}
