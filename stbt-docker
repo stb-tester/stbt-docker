@@ -384,7 +384,7 @@ def main(argv):
          sed -i s/stb-tester:x:1000/stb-tester:x:{gid}/ /etc/group &&
          cd {cwd} &&
          sudo -u stb-tester -E -- \\
-             env STBT_CONFIG_FILE={config_filename} \\
+             env STBT_CONFIG_FILE=/var/lib/stbt/test-pack/{config_filename} \\
                  PYTHONPATH=$PYTHONPATH:/usr/lib/stbt \\
              "$0" "$@" """).format(
          uid=inner_uid, gid=inner_gid, cwd=pipes.quote(innerdir),
