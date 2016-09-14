@@ -382,10 +382,14 @@ def main(argv):
               -o -print0 | xargs -0 chown -f {uid}:{gid} &&
          sed -i s/stb-tester:x:1000:1000/stb-tester:x:{uid}:{gid}/ /etc/passwd &&
          sed -i s/stb-tester:x:1000/stb-tester:x:{gid}/ /etc/group &&
+         mkdir -p /run/user/{uid} &&
+         chown -R {uid}:{gid} /run/user/{uid} &&
+         chmod 0700 /run/user/{uid} &&
          cd {cwd} &&
          sudo -u stb-tester -E -- \\
              env STBT_CONFIG_FILE={config_filename} \\
                  PYTHONPATH=$PYTHONPATH:/usr/lib/stbt \\
+                 XDG_RUNTIME_DIR=/run/user/{uid} \\
              "$0" "$@" """).format(
          uid=inner_uid, gid=inner_gid, cwd=pipes.quote(innerdir),
          config_filename=pipes.quote(config_filename))]

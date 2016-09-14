@@ -82,8 +82,9 @@ test_that_with_different_uid_we_still_have_permissions_to_files() {
     sudo chmod 700 ~test-user || fail "Test setup failed"
 
     sudo -u test-user bash <<-'EOF'
-		stbt-docker bash -c 'touch hello'
-		[ "$(ls -l hello | awk '{ print $3 }')" == 'test-user' ]
+		stbt-docker bash -c 'touch hello' &&
+		[ "$(ls -l hello | awk '{ print $3 }')" == 'test-user' ] &&
+		stbt-docker sh -c 'touch $XDG_RUNTIME_DIR/test'
 		EOF
     [ "$?" == 0 ] || fail "UID switching broken"
 }
