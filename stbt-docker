@@ -385,7 +385,8 @@ def main(argv):
          mkdir -p /run/user/{uid} &&
          chown -R {uid}:{gid} /run/user/{uid} &&
          chmod 0700 /run/user/{uid} &&
-         ln -s /dev/null /dev/raw1394 &&
+         {{ [ -e /dev/raw1394 ] || grep -q devtmpfs /proc/mounts ||
+             ln -s /dev/null /dev/raw1394 || true; }} &&
          cd {cwd} &&
          sudo -u stb-tester -E -- \\
              env STBT_CONFIG_FILE=/var/lib/stbt/test-pack/{config_filename} \\
