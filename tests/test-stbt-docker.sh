@@ -126,3 +126,10 @@ test_that_stbt_config_file_is_absolute_path() {
         'cd config && stbt config test_pack.stbt_version | tee ../output'
     [ "$(cat output)" = "0.21" ] || fail "Didn't find \$STBT_CONFIG_FILE"
 }
+
+test_stbt_match() {
+    load_test_pack with-images
+    "$srcdir"/stbt-docker stbt match \
+        tests/videotestsrc-full-frame.png \
+        tests/videotestsrc-redblue.png
+}
