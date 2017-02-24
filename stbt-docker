@@ -212,7 +212,7 @@ class DockerNotInstalledError(RuntimeError):
 
 
 def build_docker_image(test_pack, stbt_version):
-    base_image = "stbtester/stbt-one-test-pack-base-%s:v27.3" % stbt_version
+    base_image = "stbtester/stbt-one-test-pack-base-%s:v27.4" % stbt_version
     try:
         with open(os.path.join(test_pack, 'config/setup/setup')) as f:
             setup = f.read()
