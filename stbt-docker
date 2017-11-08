@@ -121,6 +121,13 @@ def native_to_unix_path(path):
         return path
 
 
+def list_mounts(container):
+    for x in container.get('Mounts', []):
+        yield x
+    for k, v in container.get('Volumes', {}).items():
+        yield {'Destination': k, 'Source': v}
+
+
 def container_to_host_path(path):
     path = os.path.abspath(path)
     if not sys.platform.startswith('linux'):
@@ -165,11 +172,11 @@ def container_to_host_path(path):
         this_container = json.loads(subprocess.check_output(
             DOCKER + ['inspect', container]))[0]
         best_match = None
-        for cpath, hpath in this_container['Volumes'].items():
-            rel = os.path.relpath(path, cpath)
+        for mount in list_mounts(this_container):
+            rel = os.path.relpath(path, mount['Destination'])
             if '..' not in rel:
                 if best_match is None or len(rel) < len(best_match[1]):
-                    best_match = (hpath, rel)
+                    best_match = (mount['Source'], rel)
         if best_match:
             return os.path.join(*best_match)
         else:
