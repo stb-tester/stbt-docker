@@ -15,3 +15,6 @@ install:
 
 script:
  - make check
+ - docker run -it -v /var/run/docker.sock:/var/run/docker.sock:ro
+     -v $PWD:/src:ro --workdir=/src stbtester/stbt-docker-selftest
+     tests/run-tests.sh tests/test-stbt-docker.sh

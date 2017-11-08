@@ -40,7 +40,7 @@ fail() { echo "error: $*"; exit 1; }
 skip() { echo "skipping: $*"; exit 77; }
 
 run() {
-    scratchdir=$(mktemp -d -t stb-tester.XXX)
+    scratchdir=$(mktemp -d -p "$testdir" -t stb-tester.XXX)
     [ -n "$scratchdir" ] || { echo "$0: mktemp failed" >&2; exit 1; }
     printf "$(bold $1...) "
     ( cd "$scratchdir" && $1 ) > "$scratchdir/log" 2>&1
