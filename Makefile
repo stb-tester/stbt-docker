@@ -12,5 +12,9 @@ check-integrationtests :
 check-pylint:
 	./pylint.sh stbt-docker
 
+publish-test-docker-container:
+	docker build -t stbtester/stbt-docker-selftest tests/
+	docker push stbtester/stbt-docker-selftest
+
 .PHONY: all clean check check-integrationtests check-pylint
 .PHONY: FORCE
