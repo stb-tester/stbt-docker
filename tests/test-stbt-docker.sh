@@ -1,12 +1,6 @@
 # Run with ./run-tests.sh
 
-skip_if_no_docker() {
-    which docker >/dev/null 2>&1 || skip "docker is not installed"
-    docker version >/dev/null 2>&1 || skip "docker does not work"
-}
-
 load_test_pack() {
-    skip_if_no_docker
     if [ -n "$2" ]; then
         outdir=$2
     else
@@ -19,8 +13,6 @@ load_test_pack() {
 }
 
 test_stbt_docker_fails_with_no_test_pack() {
-    skip_if_no_docker
-
     ! "$srcdir"/stbt-docker true || fail
 }
 
