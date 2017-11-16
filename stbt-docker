@@ -394,6 +394,7 @@ def main(argv):
     cmdline = (
         DOCKER +
         ['run', '-i', '--rm', '-u', '0:0',
+         '--entrypoint=/usr/libexec/stbt/test-pack-entrypoint.sh',
          '-v', '%s:/var/lib/stbt/.cache' % cache_volume,
          '-v', '%s:/var/lib/stbt/test-pack' % container_to_host_path(root)]
         + tty_arg + shlex.split(os.environ.get('DOCKER_OPTS', '')) +
