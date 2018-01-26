@@ -328,6 +328,26 @@ def self_uid_gid():
         return 1000, 50
 
 
+def convert_windows_arguments(args, root):
+    """Identify arguments that look like absolute paths on a Windows system to
+    files in the test-pack and make them relative unix paths.
+
+    This is useful for IDE integrations where it's difficult to fix the tool to
+    provide paths relative to the test-pack root.
+    """
+    if sys.platform != "win32":
+        return args
+
+    out = []
+    for arg in args:
+        if os.path.isabs(arg):
+            rel = os.path.relpath(arg, root).replace("\\", "/")
+            if not rel.startswith('../'):
+                arg = "/var/lib/stbt/test-pack/" + os.path.relpath(arg, root)
+        out.append(arg)
+    return out
+
+
 def main(argv):
     parser = argparse.ArgumentParser(
         epilog=__doc__,
@@ -372,7 +392,7 @@ def main(argv):
             """))
         return 1
 
-    cmd = [args.command] + args.arguments
+    cmd = [args.command] + convert_windows_arguments(args.arguments, root)
 
     tty_arg = ['-t'] if sys.stdin.isatty() else []
 
