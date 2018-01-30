@@ -116,7 +116,7 @@ test_that_stbt_config_file_is_absolute_path() {
     load_test_pack empty-test-pack
     "$srcdir"/stbt-docker bash -c \
         'cd config && stbt config test_pack.stbt_version | tee ../output'
-    [ "$(cat output)" = "27" ] || fail "Didn't find \$STBT_CONFIG_FILE"
+    [ "$(cat output)" = "28" ] || fail "Didn't find \$STBT_CONFIG_FILE"
 }
 
 test_stbt_match() {
