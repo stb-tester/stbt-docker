@@ -108,6 +108,7 @@ BASE_IMAGES = {
     "25": "stbtester/stbt-one-test-pack-base-25:v27.4",
     "26": "stbtester/stbt-one-test-pack-base-26:v27.4",
     "27": "stbtester/stbt-one-test-pack-base-27:v27.4",
+    "28": "stbtester/stbt-docker-28:a3d42b4c483c275767e8adfef97af8c291e7682d",
 }
 
 
