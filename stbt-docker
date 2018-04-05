@@ -352,7 +352,8 @@ def main(argv):
 
     config_filename, config = read_stbt_conf(root)
     stbt_version = config.get('test_pack', 'stbt_version')
-    if stbt_version not in BASE_IMAGES:
+    if stbt_version not in BASE_IMAGES and \
+            "STBT_DOCKER_TEST_IMAGE" not in os.environ:
         sys.stderr.write(dedent("""\
             error: This version of stbt-docker does not support stbt_version {v}.
 
