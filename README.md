@@ -1,7 +1,7 @@
 stbt-docker
 ===========
 
-Copyright (c) 2015-2016 stb-tester.com Ltd.
+Copyright (c) 2015-2018 stb-tester.com Ltd.
 
 stbt-docker is released under the [MIT License].
 
@@ -10,7 +10,7 @@ stbt-docker is released under the [MIT License].
 </a>
 
 stbt-docker runs the specified command in a docker container that is set up
-like an [stb-tester ONE] but without video-capture or infrared hardware.
+like an [Stb-tester Node] but without video-capture or infrared hardware.
 
 The docker container will have stbt and all its dependencies installed,
 as well as your test-pack's own dependencies as specified in
@@ -65,14 +65,8 @@ Windows. The only dependencies are Python and Docker. stbt-docker is
 self-contained and relocatable so it can be deployed as a single file with no
 dependency on anything else in stbt.
 
-stbt-docker development is done in its own git repository (instead of the
-main stb-tester git repository) because stbt-docker has a different release
-cycle (there will be a new release of stbt-docker for each [stb-tester ONE]
-release, because stbt-docker depends on the docker images used on the
-[stb-tester ONE]).
-
 
 [MIT License]: https://github.com/stb-tester/stbt-docker/blob/master/LICENSE
-[stb-tester ONE]: https://stb-tester.com/stb-tester-one
+[Stb-tester Node]: https://stb-tester.com/solutions
 [config/setup/setup]: https://stb-tester.com/manual/advanced-configuration#customising-the-test-run-environment
 [test-pack]: https://github.com/stb-tester/stb-tester-test-pack
