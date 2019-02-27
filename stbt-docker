@@ -394,32 +394,40 @@ def main(argv):
 
     inner_uid, inner_gid = self_uid_gid()
 
+    if inner_uid != 1000 or inner_gid != 1000:
+        fix_permissions_cmd = dedent("""\
+            find /var/lib/stbt -xdev -path /var/lib/stbt/test-pack -prune \\
+                -o -print0 | xargs -0 chown -f {uid}:{gid} &&
+            sed -i s/stb-tester:x:1000:1000/stb-tester:x:{uid}:{gid}/ \\
+                /etc/passwd &&
+            sed -i s/stb-tester:x:1000/stb-tester:x:{gid}/ /etc/group &&
+            sudo -u stb-tester -E --""").format(uid=inner_uid, gid=inner_gid)
+        user_opt = ["-u", "0:0"]
+    else:
+        fix_permissions_cmd = ""
+        user_opt = ["-u", "1000:1000"]
+
     # We use /bin/dash here because many programs (including make) get confused
     # if they are running as pid 1.
     cmdline = (
         DOCKER +
-        ['run', '-i', '--rm', '-u', '0:0',
+        ['run', '-i', '--rm',
          '--entrypoint=/usr/libexec/stbt/test-pack-entrypoint.sh',
          '-v', '%s:/var/lib/stbt/.cache' % cache_volume,
          '-v', '%s:/var/lib/stbt/test-pack' % container_to_host_path(root),
          '--tmpfs', '/run/user/{uid}:uid={uid},gid={gid},mode=0700'.format(
              uid=inner_uid, gid=inner_gid),
-         '-e', "XDG_RUNTIME_DIR=/run/user/{uid}".format(uid=inner_uid)]
-        + tty_arg + shlex.split(os.environ.get('DOCKER_OPTS', '')) +
+         '-e', "XDG_RUNTIME_DIR=/run/user/{uid}".format(uid=inner_uid)] +
+        user_opt + tty_arg + shlex.split(os.environ.get('DOCKER_OPTS', '')) +
         [docker_image, '/bin/dash', '-c', dedent("""\
-         find /var/lib/stbt -xdev -path /var/lib/stbt/test-pack -prune \\
-              -o -print0 | xargs -0 chown -f {uid}:{gid} &&
-         sed -i s/stb-tester:x:1000:1000/stb-tester:x:{uid}:{gid}/ /etc/passwd &&
-         sed -i s/stb-tester:x:1000/stb-tester:x:{gid}/ /etc/group &&
-         {{ [ -e /dev/raw1394 ] || grep -q devtmpfs /proc/mounts ||
-             ln -s /dev/null /dev/raw1394 || true; }} &&
          cd {cwd} &&
-         sudo -u stb-tester -E -- \\
+         {fix_permissions_cmd} \\
              env STBT_CONFIG_FILE=/var/lib/stbt/test-pack/{config_filename} \\
                  PYTHONPATH=$PYTHONPATH:/usr/lib/stbt \\
              "$0" "$@" """).format(
-         uid=inner_uid, gid=inner_gid, cwd=pipes.quote(innerdir),
-         config_filename=pipes.quote(config_filename))]
+         cwd=pipes.quote(innerdir),
+         config_filename=pipes.quote(config_filename),
+         fix_permissions_cmd=fix_permissions_cmd)]
         + cmd)
 
     if os.name == "posix":
