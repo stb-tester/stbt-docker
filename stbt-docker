@@ -283,9 +283,14 @@ def read_stbt_conf(root):
     cp = ConfigParser.ConfigParser()
     filename = os.path.join(root, '.stbt.conf')
     for _ in range(10):
+        filename = os.path.normpath(filename)
+        rp = os.path.relpath(filename, root)
+        if rp == '..' or rp.startswith('../'):
+            raise Exception("Traversing .stbt.conf symlinks failed: "
+                            "symlink points outside of test-pack")
         try:
             cp.read(filename)
-            return os.path.relpath(filename, root), cp
+            return rp, cp
         except ConfigParser.MissingSectionHeaderError:
             if os.name == "posix":
                 # POSIX systems can support symlinks so something else must have
@@ -293,11 +298,7 @@ def read_stbt_conf(root):
                 raise
             with open(filename) as f:
                 link = f.read()
-            filename = os.path.normpath(os.path.join(
-                os.path.dirname(filename), link))
-            if not filename.startswith(root):
-                raise Exception("Traversing .stbt.conf symlinks failed: "
-                                "symlink points outside of test-pack")
+            filename = os.path.join(os.path.dirname(filename), link)
 
     raise Exception(
         "Traversing .stbt.conf symlinks failed: Symlink depth too great")
