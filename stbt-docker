@@ -336,6 +336,8 @@ def main(argv):
     parser = argparse.ArgumentParser(
         epilog=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('--read-only', action='store_true',
+                        help="""Mount the test-pack read-only""")
     parser.add_argument('command')
     parser.add_argument('arguments', nargs=argparse.REMAINDER)
     args = parser.parse_args(argv[1:])
@@ -414,7 +416,8 @@ def main(argv):
         ['run', '-i', '--rm',
          '--entrypoint=/usr/libexec/stbt/test-pack-entrypoint.sh',
          '-v', '%s:/var/lib/stbt/.cache' % cache_volume,
-         '-v', '%s:/var/lib/stbt/test-pack' % container_to_host_path(root),
+         '-v', '%s:/var/lib/stbt/test-pack%s' % (
+             container_to_host_path(root), ":ro" if args.read_only else ""),
          '--tmpfs', '/run/user/{uid}:uid={uid},gid={gid},mode=0700'.format(
              uid=inner_uid, gid=inner_gid),
          '-e', "XDG_RUNTIME_DIR=/run/user/{uid}".format(uid=inner_uid)] +

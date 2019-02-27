@@ -145,3 +145,13 @@ test_stbt_docker_no_new_privs() {
     [ "$(awk '{ print $1 }' id)" = "uid=1000(stb-tester)" ] || fail "Wrong uid"
     [ "$(awk '{ print $2 }' id)" = "gid=1000(stb-tester)" ] || fail "Wrong gid"
 }
+
+test_stbt_docker_read_only() {
+    load_test_pack with-tests
+    "$srcdir"/stbt-docker --read-only true
+    ! "$srcdir"/stbt-docker --read-only touch file || fail "touch succeeded"
+    ! [ -e file ] || fail "file exists"
+
+    "$srcdir"/stbt-docker touch file || fail "touch failed"
+    [ -e file ] || fail "file doesn't exist"
+}
