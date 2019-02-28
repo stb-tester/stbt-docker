@@ -130,3 +130,28 @@ test_stbt_lint() {
     load_test_pack with-tests
     "$srcdir"/stbt-docker stbt lint --errors-only tests/tests.py
 }
+
+test_stbt_docker_no_new_privs() {
+    [ "$UID" = 1000 ] && [ "$GROUPS" = 1000 ] \
+    ||  skip "Host needs UID/GID 1000 for no-new-privs"
+
+    load_test_pack with-tests
+    DOCKER_OPTS="--security-opt=no-new-privileges" \
+    "$srcdir"/stbt-docker id | grep -v sudo >id || fail "Failed running with no-new-privs"
+
+    id
+    cat id
+
+    [ "$(awk '{ print $1 }' id)" = "uid=1000(stb-tester)" ] || fail "Wrong uid"
+    [ "$(awk '{ print $2 }' id)" = "gid=1000(stb-tester)" ] || fail "Wrong gid"
+}
+
+test_stbt_docker_read_only() {
+    load_test_pack with-tests
+    "$srcdir"/stbt-docker --read-only true
+    ! "$srcdir"/stbt-docker --read-only touch file || fail "touch succeeded"
+    ! [ -e file ] || fail "file exists"
+
+    "$srcdir"/stbt-docker touch file || fail "touch failed"
+    [ -e file ] || fail "file doesn't exist"
+}
