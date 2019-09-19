@@ -111,7 +111,7 @@ BASE_IMAGES = {
     "28": "stbtester/stbt-docker-28:a3d42b4c483c275767e8adfef97af8c291e7682d",
     "29": "stbtester/stbt-docker-29:40f62a9b23b4217d0ea2626606db757e8c02ac77",
     "30": "stbtester/stbt-docker-30:70d5be44d031b01f7b7226102dde29b53d259a41",
-    "31": "stbtester/stbt-docker-31:cfaf6836153991f650a43b0d0dafdc4fc45bb06b",
+    "31": "stbtester/stbt-docker-31:ba8285edf37cf9df8b4825e97453a5e49b292f41",
 }
 
 
