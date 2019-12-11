@@ -91,11 +91,11 @@ import os
 import pipes
 import re
 import shlex
+import shutil
 import subprocess
 import sys
-import tarfile
 import tempfile
-from cStringIO import StringIO
+from contextlib import contextmanager
 from textwrap import dedent
 
 DOCKER = shlex.split(os.environ.get("DOCKER", "docker"))
@@ -205,16 +205,14 @@ def find_test_pack_root():
         root = os.path.split(root)[0]
 
 
-def dict_to_tarball(d):
-    with tempfile.NamedTemporaryFile() as tarball:
-        with tarfile.open(fileobj=tarball, mode='w') as t:
-            for filename, contents in d.items():
-                ti = tarfile.TarInfo(name=filename)
-                ti.size = len(contents)
-                ti.uid = os.getuid()
-                ti.gid = os.getgid()
-                t.addfile(ti, StringIO(contents))
-        return open(tarball.name, 'r')
+@contextmanager
+def named_temporary_directory(
+        suffix='', prefix='tmp', dir=None):  # pylint: disable=W0622
+    dirname = tempfile.mkdtemp(suffix, prefix, dir)
+    try:
+        yield dirname
+    finally:
+        shutil.rmtree(dirname)
 
 DOCKERFILE = """
 FROM {base_image}
@@ -263,14 +261,14 @@ def build_docker_image(test_pack, stbt_version):
     except OSError:
         raise DockerNotInstalledError()
 
-    docker_build_context = {
-        'Dockerfile': dockerfile,
-        'setup': setup,
-    }
-    with dict_to_tarball(docker_build_context) as f:
+    with named_temporary_directory() as temp_dir:
+        with open(os.path.join(temp_dir, "Dockerfile"), "wb") as f:
+            f.write(dockerfile)
+        with open(os.path.join(temp_dir, "setup"), "wb") as f:
+            f.write(setup)
         subprocess.check_call(
-            DOCKER + ['build', '-t', docker_image, '-'],
-            stdout=sys.stderr, stdin=f)
+            DOCKER + ['build', '-t', docker_image, temp_dir],
+            stdout=sys.stderr)
 
     return docker_image
 
