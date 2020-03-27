@@ -252,7 +252,7 @@ def build_docker_image(test_pack, stbt_version):
 
     dockerfile = DOCKERFILE.format(base_image=base_image)
     md5 = hashlib.md5()
-    md5.update(stbt_version)
+    md5.update(base_image)
     md5.update(setup)
     docker_image = "stb-tester-test-pack-%s" % md5.hexdigest()
 
