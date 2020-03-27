@@ -114,6 +114,8 @@ BASE_IMAGES = {
     "31": "stbtester/stbt-docker-31:4de53681b74cce18e79858b84857e2574a271676",
 }
 
+_verbose = False
+
 
 def which_docker_container_am_i_running_in():
     with open('/proc/self/cgroup') as f:
@@ -243,6 +245,7 @@ def build_docker_image(test_pack, stbt_version):
     except IOError as e:
         if e.errno in [errno.EEXIST, errno.ENOENT]:
             # No customisation of docker container required
+            debug("Using docker image %s" % base_image)
             return base_image
         else:
             raise
@@ -257,6 +260,7 @@ def build_docker_image(test_pack, stbt_version):
         subprocess.check_output(DOCKER + ['inspect', docker_image],
                                 stderr=subprocess.STDOUT)
         # Customised docker container is already cached
+        debug("Using cached docker image %s" % docker_image)
         return docker_image
     except subprocess.CalledProcessError:
         pass
@@ -267,11 +271,13 @@ def build_docker_image(test_pack, stbt_version):
         'Dockerfile': dockerfile,
         'setup': setup,
     }
+    debug("Running config/setup/setup in base docker image %s" % base_image)
     with dict_to_tarball(docker_build_context) as f:
         subprocess.check_call(
             DOCKER + ['build', '-t', docker_image, '-'],
             stdout=sys.stderr, stdin=f)
 
+    debug("Built docker image %s" % docker_image)
     return docker_image
 
 
@@ -339,9 +345,13 @@ def main(argv):
         formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--read-only', action='store_true',
                         help="""Mount the test-pack read-only""")
+    parser.add_argument('--verbose', '-v', action='store_true',
+                        help="""Display the docker command before running it""")
     parser.add_argument('command')
     parser.add_argument('arguments', nargs=argparse.REMAINDER)
     args = parser.parse_args(argv[1:])
+    global _verbose
+    _verbose = args.verbose
 
     root = find_test_pack_root()
     if root is None:
@@ -434,10 +444,18 @@ def main(argv):
          fix_permissions_cmd=fix_permissions_cmd)]
         + cmd)
 
+    if _verbose:
+        sys.stderr.write("+ %s\n" % (" ".join(pipes.quote(x) for x in cmdline)))
+
     if os.name == "posix":
         os.execvp(cmdline[0], cmdline)
     else:
         return subprocess.call(cmdline)
+
+
+def debug(s):
+    if _verbose:
+        sys.stderr.write("stbt-docker: %s\n" % (s,))
 
 
 if __name__ == '__main__':
