@@ -120,8 +120,8 @@ _verbose = False
 def which_docker_container_am_i_running_in():
     with open('/proc/self/cgroup') as f:
         for line in f:
-            m = (re.search(r'docker/([0-9a-f]{64})$', line)
-                 or re.search(r'docker-([0-9a-f]{64})\.scope$', line))
+            m = (re.search(r'docker/([0-9a-f]{64})$', line) or
+                 re.search(r'docker-([0-9a-f]{64})\.scope$', line))
             if m:
                 return m.group(1)
 
@@ -441,8 +441,8 @@ def main(argv):
              "$0" "$@" """).format(
          cwd=pipes.quote(innerdir),
          config_filename=pipes.quote(config_filename),
-         fix_permissions_cmd=fix_permissions_cmd)]
-        + cmd)
+         fix_permissions_cmd=fix_permissions_cmd)] +
+        cmd)
 
     if _verbose:
         sys.stderr.write("+ %s\n" % (" ".join(pipes.quote(x) for x in cmdline)))
