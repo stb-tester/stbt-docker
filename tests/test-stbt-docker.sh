@@ -85,9 +85,7 @@ test_that_stbt_docker_can_import_stbt() {
     load_test_pack empty-test-pack
     "$srcdir"/stbt-docker python <<-'EOF'
 	import stbt
-	print stbt.__doc__.split("\n")[0]
-	assert stbt.__doc__.split("\n")[0] == \
-	    "Main stb-tester python module. Intended to be used with `stbt run`."
+	assert stbt.match
 	EOF
 }
 
@@ -96,9 +94,7 @@ test_that_user_provided_pythonpath_doesnt_prevent_us_from_importing_stbt() {
     DOCKER_OPTS="-e PYTHONPATH=/var/lib/stbt/test-pack" \
     "$srcdir"/stbt-docker python <<-'EOF'
 	import stbt
-	print stbt.__doc__.split("\n")[0]
-	assert stbt.__doc__.split("\n")[0] == \
-	    "Main stb-tester python module. Intended to be used with `stbt run`."
+	assert stbt.match
 	EOF
 }
 
