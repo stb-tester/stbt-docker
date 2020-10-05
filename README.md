@@ -1,7 +1,7 @@
 stbt-docker
 ===========
 
-Copyright (c) 2015-2018 stb-tester.com Ltd.
+Copyright (c) 2015-2020 stb-tester.com Ltd.
 
 stbt-docker is released under the [MIT License].
 

@@ -10,7 +10,7 @@
 # self-contained and relocatable so it can be deployed as a single file with no
 # dependency on anything else in stbt.
 #
-# Copyright (c) 2015-2019 Stb-tester.com Ltd.
+# Copyright (c) 2015-2020 Stb-tester.com Ltd.
 #
 # stbt-docker is released under the MIT License:
 #
